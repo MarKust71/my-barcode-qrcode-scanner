@@ -16,11 +16,15 @@
     "@types/node": "^17.0.5",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@zxing/browser": "^0.0.10",
+    "@zxing/library": "^0.19.1",
+    "barcode-react-scanner": "^1.2.0",
     "html-react-parser": "^1.2.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "^5.0.0",
     "typescript": "^4.2.4",
+    "use-sound": "^4.0.1",
     "web-vitals": "^2.1.2"
   },
   "scripts": {
