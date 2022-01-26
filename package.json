@@ -18,6 +18,7 @@
     "@types/react-dom": "^17.0.0",
     "@zxing/browser": "^0.0.10",
     "@zxing/library": "^0.19.1",
+    "axios": "^0.25.0",
     "barcode-react-scanner": "^1.2.0",
     "html-react-parser": "^1.2.6",
     "react": "^17.0.2",

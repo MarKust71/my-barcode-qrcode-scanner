@@ -3,9 +3,28 @@ import { Box, Button, Card, CardContent, Modal, TextField, Typography, useTheme 
 
 import { MyBarCodeScanner } from 'app/myBarCodeScanner/MyBarCodeScanner';
 import { OnUpdateParams } from 'app/myBarCodeScanner/MyBarCodeScanner.types';
+import { api } from 'api/axiosApi';
 
 import { MainProps } from './Main.types';
 import { useStyles } from './Main.styles';
+
+type FetchDataParams = {
+  code: string;
+};
+
+const fetchData = async ({ code }: FetchDataParams): Promise<void> => {
+  try {
+    const response = await api.post('tracking/checkmailex', {
+      language: 'PL',
+      addPostOfficeInfo: true,
+      number: code,
+    });
+
+    console.log('response:', response.data.mailInfo);
+  } catch (error) {
+    console.debug(error);
+  }
+};
 
 export const Main: React.FC<MainProps> = ({}) => {
   const theme = useTheme();
@@ -20,15 +39,27 @@ export const Main: React.FC<MainProps> = ({}) => {
       setScanResult(result.getText());
       setIsBarcodeScannerModalOpen(false);
     }
+
+    if (err) {
+      console.debug(err);
+    }
   };
 
   const modalHandleClose = () => {
+    // TODO: remove!
+    console.log('modal close');
     setIsBarcodeScannerModalOpen(false);
   };
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (scanResult) {
+      fetchData({ code: scanResult });
+    }
+  }, [scanResult]);
 
   return (
     <>
