@@ -1,17 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import useSound from 'use-sound';
-import { BrowserMultiFormatOneDReader, IScannerControls } from '@zxing/browser';
-import { Result } from '@zxing/library';
+import React, { useEffect } from 'react';
+import { BrowserMultiFormatOneDReader } from '@zxing/browser';
 import { Box } from '@mui/material';
-
-import beepSound from 'assets/barcode-scanner-beep-sound.mp3';
 
 import { MyBarCodeScannerProps } from './MyBarCodeScanner.types';
 
-export const MyBarCodeScanner: React.FC<MyBarCodeScannerProps> = ({ onUpdate }) => {
-  const [play] = useSound(beepSound, { volume: 1 });
-  const [scanControls, setScanControls] = useState<IScannerControls | undefined>();
-
+export const MyBarCodeScanner: React.FC<MyBarCodeScannerProps> = ({ scanCallback }) => {
   useEffect(() => {
     const codeReader = new BrowserMultiFormatOneDReader();
 
@@ -29,30 +22,8 @@ export const MyBarCodeScanner: React.FC<MyBarCodeScannerProps> = ({ onUpdate }) 
       });
 */
 
-    const scanTimeout = (controls: IScannerControls) => {
-      setTimeout(() => {
-        controls.stop();
-      }, 10000);
-    };
-
-    const scanCallback = (result: Result | undefined, err: unknown, controls: IScannerControls) => {
-      scanTimeout(controls);
-      setScanControls(controls);
-      if (result) {
-        play();
-        controls.stop();
-      }
-      onUpdate({ err, result });
-    };
-
     codeReader.decodeFromVideoDevice(undefined, 'scannerVideo', scanCallback);
 
-    return (): void => {
-      if (scanControls) {
-        scanControls.stop();
-      }
-      // codeReader.reset();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

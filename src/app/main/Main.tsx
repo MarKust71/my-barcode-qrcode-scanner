@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Card, CardContent, Modal, TextField, Typography, useTheme } from '@mui/material';
+import { Result } from '@zxing/library';
+import { IScannerControls } from '@zxing/browser';
+import useSound from 'use-sound';
 
 import { MyBarCodeScanner } from 'app/myBarCodeScanner/MyBarCodeScanner';
 import { OnUpdateParams } from 'app/myBarCodeScanner/MyBarCodeScanner.types';
 import { api } from 'api/axiosApi';
+import beepSound from 'assets/barcode-scanner-beep-sound.mp3';
 
 import { MainProps } from './Main.types';
 import { useStyles } from './Main.styles';
@@ -32,6 +36,27 @@ export const Main: React.FC<MainProps> = ({}) => {
 
   const [isBarcodeScannerModalOpen, setIsBarcodeScannerModalOpen] = useState(false);
   const [scanResult, setScanResult] = useState('');
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
+  const [scanControls, setScanControls] = useState<IScannerControls | undefined>();
+  const [play] = useSound(beepSound, { volume: 1 });
+
+  const handleSetTimeout = (controls: IScannerControls) => {
+    setTimeoutId((prevState) => (prevState === undefined ? setTimeout(() => controls.stop(), 10000) : prevState));
+  };
+
+  const scanCallback = (result: Result | undefined, err: unknown, controls: IScannerControls) => {
+    setScanControls((prevState) => (prevState === undefined ? controls : prevState));
+
+    if (timeoutId === undefined) {
+      handleSetTimeout(controls);
+    }
+
+    if (result) {
+      play();
+      controls.stop();
+    }
+    handleUpdate({ err, result });
+  };
 
   const handleUpdate = ({ err, result }: OnUpdateParams) => {
     console.log({ err, result });
@@ -45,9 +70,14 @@ export const Main: React.FC<MainProps> = ({}) => {
     }
   };
 
-  const modalHandleClose = () => {
-    // TODO: remove!
-    console.log('modal close');
+  const handleModalClose = () => {
+    if (timeoutId !== undefined) {
+      clearTimeout(timeoutId);
+    }
+    if (scanControls !== undefined) {
+      scanControls.stop();
+      setScanControls(undefined);
+    }
     setIsBarcodeScannerModalOpen(false);
   };
 
@@ -66,12 +96,12 @@ export const Main: React.FC<MainProps> = ({}) => {
       <Modal
         open={isBarcodeScannerModalOpen}
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
-        onClose={modalHandleClose}
+        onClose={handleModalClose}
       >
         <Card>
           <CardContent>
             <Box id="scanner-wrapper">
-              <MyBarCodeScanner onUpdate={handleUpdate} />
+              <MyBarCodeScanner scanCallback={scanCallback} />
               <Box mb={1} />
               <TextField fullWidth value={scanResult} inputProps={{ style: { textAlign: 'center' } }} />
             </Box>
