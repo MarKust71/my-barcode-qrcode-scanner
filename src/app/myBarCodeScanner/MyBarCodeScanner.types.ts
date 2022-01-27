@@ -1,6 +1,7 @@
 import { Result } from '@zxing/library';
+import { IScannerControls } from '@zxing/browser';
 
-type OnUpdate = ({ err, result }: OnUpdateParams) => void;
+// type OnUpdate = ({ err, result }: OnUpdateParams) => void;
 
 export type OnUpdateParams = {
   err: unknown;
@@ -8,5 +9,5 @@ export type OnUpdateParams = {
 };
 
 export type MyBarCodeScannerProps = {
-  onUpdate: OnUpdate;
+  scanCallback: (result: Result | undefined, err: unknown, controls: IScannerControls) => void;
 };
