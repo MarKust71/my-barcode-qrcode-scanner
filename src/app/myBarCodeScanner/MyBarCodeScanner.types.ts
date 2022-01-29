@@ -8,6 +8,9 @@ export type OnUpdateParams = {
   result?: Result;
 };
 
+export type scanMode = '1D' | '2D' | 'QR';
+
 export type MyBarCodeScannerProps = {
   scanCallback: (result: Result | undefined, err: unknown, controls: IScannerControls) => void;
+  mode: scanMode;
 };

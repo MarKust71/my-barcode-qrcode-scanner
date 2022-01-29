@@ -5,7 +5,7 @@ import { MyBarCodeScanner } from './MyBarCodeScanner';
 
 describe('MyBarCodeScanner', () => {
   test('renders', () => {
-    render(<MyBarCodeScanner scanCallback={() => null} />);
+    render(<MyBarCodeScanner scanCallback={() => null} mode="1D" />);
     const element = screen.getByText('MyBarCodeScanner');
     expect(element).toBeInTheDocument();
   });

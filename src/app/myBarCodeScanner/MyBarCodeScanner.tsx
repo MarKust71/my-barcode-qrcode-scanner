@@ -1,12 +1,24 @@
 import React, { useEffect } from 'react';
-import { BrowserMultiFormatOneDReader } from '@zxing/browser';
-import { Box } from '@mui/material';
+import { BrowserMultiFormatOneDReader, BrowserMultiFormatReader, BrowserQRCodeReader } from '@zxing/browser';
 
-import { MyBarCodeScannerProps } from './MyBarCodeScanner.types';
+import { MyBarCodeScannerProps, scanMode } from './MyBarCodeScanner.types';
 
-export const MyBarCodeScanner: React.FC<MyBarCodeScannerProps> = ({ scanCallback }) => {
+export const MyBarCodeScanner: React.FC<MyBarCodeScannerProps> = ({ scanCallback, mode }) => {
   useEffect(() => {
-    const codeReader = new BrowserMultiFormatOneDReader();
+    const browser = (mode: scanMode) => {
+      switch (mode) {
+        case '1D':
+          return new BrowserMultiFormatOneDReader();
+
+        case '2D':
+          return new BrowserMultiFormatReader();
+
+        case 'QR':
+          return new BrowserQRCodeReader();
+      }
+    };
+
+    const codeReader = browser(mode);
 
     /*
     const scanOnce = codeReader
@@ -27,9 +39,5 @@ export const MyBarCodeScanner: React.FC<MyBarCodeScannerProps> = ({ scanCallback
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <Box id="scanner-container" sx={{ width: 400, height: 300, border: '1px solid black' }}>
-      <video id="scannerVideo" playsInline width={400} />
-    </Box>
-  );
+  return <video id="scannerVideo" playsInline width="100% !important" height="auto !important" />;
 };
