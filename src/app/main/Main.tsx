@@ -13,14 +13,14 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { Result } from '@zxing/library';
+// import { Result } from '@zxing/library';
 import { IScannerControls } from '@zxing/browser';
-import useSound from 'use-sound';
+// import useSound from 'use-sound';
 
 import { MyBarCodeScanner } from 'app/myBarCodeScanner/MyBarCodeScanner';
-import { OnUpdateParams } from 'app/myBarCodeScanner/MyBarCodeScanner.types';
+// import { OnUpdateParams } from 'app/myBarCodeScanner/MyBarCodeScanner.types';
 import { api } from 'api/axiosApi';
-import beepSound from 'assets/barcode-scanner-beep-sound.mp3';
+// import beepSound from 'assets/barcode-scanner-beep-sound.mp3';
 
 import { MainProps } from './Main.types';
 import { useStyles } from './Main.styles';
@@ -49,16 +49,18 @@ export const Main: React.FC<MainProps> = ({}) => {
 
   const [isBarcodeScannerModalOpen, setIsBarcodeScannerModalOpen] = useState(false);
   const [scanResult, setScanResult] = useState('');
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
+  // const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
   const [scanControls, setScanControls] = useState<IScannerControls | undefined>();
-  const [play] = useSound(beepSound, { volume: 1 });
+  // const [play] = useSound(beepSound, { volume: 1 });
   const [scan1D, setScan1D] = useState(false);
   const [scan2D, setScan2D] = useState(false);
   const [scanQR, setScanQR] = useState(false);
 
+  /*
   const handleSetTimeout = (controls: IScannerControls) => {
     setTimeoutId((prevState) => (prevState === undefined ? setTimeout(() => controls.stop(), 10000) : prevState));
   };
+*/
 
   const handleScan1D = () => {
     setScan1D((prevState) => !prevState);
@@ -72,6 +74,7 @@ export const Main: React.FC<MainProps> = ({}) => {
     setScanQR((prevState) => !prevState);
   };
 
+  /*
   const scanCallback = (result: Result | undefined, err: unknown, controls: IScannerControls) => {
     setScanControls((prevState) => (prevState === undefined ? controls : prevState));
 
@@ -85,7 +88,9 @@ export const Main: React.FC<MainProps> = ({}) => {
     }
     handleUpdate({ err, result });
   };
+*/
 
+  /*
   const handleUpdate = ({ err, result }: OnUpdateParams) => {
     console.log({ err, result });
     if (result) {
@@ -100,21 +105,20 @@ export const Main: React.FC<MainProps> = ({}) => {
       console.debug(err);
     }
   };
+*/
 
   const handleModalClose = () => {
+    /*
     if (timeoutId !== undefined) {
       clearTimeout(timeoutId);
     }
+*/
     if (scanControls !== undefined) {
       scanControls.stop();
       setScanControls(undefined);
     }
     setIsBarcodeScannerModalOpen(false);
   };
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (scanResult) {
@@ -165,9 +169,9 @@ export const Main: React.FC<MainProps> = ({}) => {
                   </ButtonGroup>
                 </Box>
                 <Box id="scanner-container" sx={{ width: 400, height: 300, border: '1px solid black' }}>
-                  {scan1D && <MyBarCodeScanner mode="1D" scanCallback={scanCallback} />}
-                  {scan2D && <MyBarCodeScanner mode="2D" scanCallback={scanCallback} />}
-                  {scanQR && <MyBarCodeScanner mode="QR" scanCallback={scanCallback} />}
+                  {scan1D && <MyBarCodeScanner mode="1D" />}
+                  {scan2D && <MyBarCodeScanner mode="2D" />}
+                  {scanQR && <MyBarCodeScanner mode="QR" />}
                 </Box>
                 <Box mb={1} />
                 <TextField fullWidth value={scanResult} inputProps={{ style: { textAlign: 'center' } }} />

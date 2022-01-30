@@ -1,41 +1,19 @@
 import React, { useEffect } from 'react';
-import { BrowserMultiFormatOneDReader, BrowserMultiFormatReader, BrowserQRCodeReader } from '@zxing/browser';
 
-import { MyBarCodeScannerProps, scanMode } from './MyBarCodeScanner.types';
+import { useScanCode } from 'hooks/useScanCode/useScanCode';
 
-export const MyBarCodeScanner: React.FC<MyBarCodeScannerProps> = ({ scanCallback, mode }) => {
+import { MyBarCodeScannerProps } from './MyBarCodeScanner.types';
+
+export const MyBarCodeScanner: React.FC<MyBarCodeScannerProps> = ({ mode }) => {
+  const { setScanMode, scanResult } = useScanCode();
+
   useEffect(() => {
-    const browser = (mode: scanMode) => {
-      switch (mode) {
-        case '1D':
-          return new BrowserMultiFormatOneDReader();
+    // TODO: remove!
+    console.log('scanResult:', scanResult);
+  }, [scanResult]);
 
-        case '2D':
-          return new BrowserMultiFormatReader();
-
-        case 'QR':
-          return new BrowserQRCodeReader();
-      }
-    };
-
-    const codeReader = browser(mode);
-
-    /*
-    const scanOnce = codeReader
-      .decodeOnceFromVideoDevice(undefined, 'scannerVideo')
-      .then((result: Result) => {
-        play();
-        console.log({ result });
-        onUpdate({ err: null, result });
-      })
-      .catch((error) => {
-        console.log(error);
-        onUpdate({ err: error, result: undefined });
-      });
-*/
-
-    codeReader.decodeFromVideoDevice(undefined, 'scannerVideo', scanCallback);
-
+  useEffect(() => {
+    setScanMode(mode);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
